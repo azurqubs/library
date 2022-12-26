@@ -38,7 +38,7 @@ library.round = function(num, bracket)
 end
 
 --From: https://devforum.roblox.com/t/how-to-create-a-simple-rainbow-effect-using-tweenService/221849/2
-local chromaColor
+getgenv().chromaColor
 spawn(function()
     while library and wait() do
         chromaColor = Color3.fromHSV(tick() % 6 / 6, 1, 1)
