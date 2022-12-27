@@ -2795,13 +2795,14 @@ function library:SendNotification(duration, message)
 
 	tweenService:Create(library:Create("TextLabel", {
 		Position = UDim2.new(0, 4, 0, 0),
-		Size = UDim2.new(0, 70, 0, 16),
+		Size = UDim2.new(0, 200, 0, 16),
 		BackgroundTransparency = 1,
 		Text = library.title,
 		Font = Enum.Font.Gotham,
 		TextColor3 = library.flags["Menu Accent Color"],
 		TextSize = 16,
 		TextTransparency = 1,
+		TextXAlignment = "Left"
 		Parent = notification
 	}), TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
 
