@@ -2802,7 +2802,7 @@ function library:SendNotification(duration, message)
 		TextColor3 = library.flags["Menu Accent Color"],
 		TextSize = 16,
 		TextTransparency = 1,
-		TextXAlignment = "Left"
+		TextXAlignment = "Left",
 		Parent = notification
 	}), TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
 
