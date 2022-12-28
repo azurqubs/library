@@ -2816,6 +2816,8 @@ function library:SendNotification(duration, message)
 				otherNotif:TweenPosition(UDim2.new(1, -5, 1, otherNotif.Position.Y.Offset + 85), "Out", "Quad", 0.2)
 			end
 		end
+		tweenService:Create(notification, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 240, 0, 80), BackgroundTransparency = 1}):Play()
+		task.wait(.1)
 		notification:Destroy()
 	end)
 end
