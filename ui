@@ -2821,6 +2821,57 @@ function library:SendNotification(duration, message)
 		task.wait(.1)
 		notification:Destroy()
 	end)
+
+    -- make better watermark
+	function library:CreateWatermark(title)
+	    if not library.base then return end
+        local watermark = library:Create("TextLabel", {
+            BorderSizePixel = 2,
+            BorderColor3 = Color3.fromRGB(0,0,0),
+            BackgroundColor3 = Color3.fromRGB(30,30,30),
+            AnchorPoint = Vector2.new(1,0),
+            Position = UDim2.new(0.95,45,0,10),
+            TextColor3 = Color3.fromRGB(255,255,255),
+            TextStrokeTransparency = 0.75,
+            TextSize = 15,
+            Font = Enum.Font.SourceSansSemibold,
+            Text = title or library.title,
+			Parent = library.base
+		})
+		watermark.Size = UDim2.new(
+            0,watermark.TextBounds.X + 32,
+            0,watermark.TextBounds.Y + 6
+        ),
+		
+        library:Create("UIStroke", {
+			ApplyStrokeMode = "Border",
+			Color = library.flags["Menu Accent Color"],
+			LineJoinMode = "Miter",
+			Thickness = 1,
+			Parent = watermark
+		})
+		
+    	library:Create("UIPadding", {
+    		PaddingBottom = UDim.new(0, 1),
+            PaddingLeft = UDim.new(0, 6),
+            PaddingRight = UDim.new(0, 6),
+    		Parent = watermark
+    	})
+		
+		watermark:GetPropertyChangedSignal("Text"):Connect(function()
+            watermark.Size = UDim2.new(
+                0,watermark.TextBounds.X + 32,
+                0,watermark.TextBounds.Y + 6
+            )
+        end)
+		
+		library:AddConnection(runService.Heartbeat, function()
+            watermark.Text = string.format(
+                "  " .. (title or library.title) .. "  |  %s  |  " .. game:GetService("Players").LocalPlayer.Name .. "  ",
+                os.date("%X")
+            )
+        end)
+    end
 end
 
 --LIBRARY END
