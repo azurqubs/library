@@ -12,7 +12,6 @@ if getgenv().library then
     library:SendNotification(5, "Script already loaded!")
     return
 end
-print("EEEEE")
 
 local library = {design = getgenv().design == "kali" and "kali" or "uwuware", tabs = {}, draggable = true, flags = {}, title = "NIL", open = false, mousestate = inputService.MouseIconEnabled, popup = nil, instances = {}, connections = {}, options = {}, notifications = {}, tabSize = 0, theme = {}, foldername = "_configs", fileext = ".txt"}
 getgenv().library = library
