@@ -9,7 +9,8 @@ getgenv().tweenService = game:GetService"TweenService"
 getgenv().marketplaceService = game:GetService"MarketplaceService"
 
 if getgenv().library then
-    getgenv().library:Unload()
+    library:SendNotification(5, "Script already loaded!")
+    return
 end
 
 local library = {design = getgenv().design == "kali" and "kali" or "uwuware", tabs = {}, draggable = true, flags = {}, title = "NIL", open = false, mousestate = inputService.MouseIconEnabled, popup = nil, instances = {}, connections = {}, options = {}, notifications = {}, tabSize = 0, theme = {}, foldername = "_configs", fileext = ".txt"}
