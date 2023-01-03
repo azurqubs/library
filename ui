@@ -2817,57 +2817,150 @@ function library:SendNotification(duration, message)
 		task.wait(.1)
 		notification:Destroy()
 	end)
+end
 
-    -- make better watermark
-	function library:CreateWatermark(title)
-	    if not library.base then return end
-        local watermark = library:Create("TextLabel", {
-            BorderSizePixel = 2,
-            BorderColor3 = Color3.fromRGB(0,0,0),
-            BackgroundColor3 = Color3.fromRGB(30,30,30),
-            AnchorPoint = Vector2.new(1,0),
-            Position = UDim2.new(0.95,45,0,10),
-            TextColor3 = Color3.fromRGB(255,255,255),
-            TextStrokeTransparency = 0.75,
-            TextSize = 15,
-            Font = Enum.Font.SourceSansSemibold,
-            Text = title or library.title,
-			Parent = library.base
-		})
-		watermark.Size = UDim2.new(
+-- make better watermark
+function library:CreateWatermark(title)
+	if not library.base then return end
+    local watermark = library:Create("TextLabel", {
+        BorderSizePixel = 2,
+        BorderColor3 = Color3.fromRGB(0,0,0),
+        BackgroundColor3 = Color3.fromRGB(30,30,30),
+        AnchorPoint = Vector2.new(1,0),
+        Position = UDim2.new(0.95,45,0,10),
+        TextColor3 = Color3.fromRGB(255,255,255),
+        TextStrokeTransparency = 0.75,
+        TextSize = 15,
+        Font = Enum.Font.SourceSansSemibold,
+        Text = title or library.title,
+        Visible = library.flags["WatermarkEnabled"],
+		Parent = library.base
+	})
+	watermark.Size = UDim2.new(
+        0,watermark.TextBounds.X + 32,
+        0,watermark.TextBounds.Y + 6
+    ),
+		
+    library:Create("UIStroke", {
+		ApplyStrokeMode = "Border",
+		Color = library.flags["Menu Accent Color"],
+		LineJoinMode = "Miter",
+		Thickness = 1,
+		Parent = watermark
+	})
+		
+    library:Create("UIPadding", {
+    	PaddingBottom = UDim.new(0, 1),
+        PaddingLeft = UDim.new(0, 6),
+        PaddingRight = UDim.new(0, 6),
+    	Parent = watermark
+    })
+		
+	watermark:GetPropertyChangedSignal("Text"):Connect(function()
+        watermark.Size = UDim2.new(
             0,watermark.TextBounds.X + 32,
             0,watermark.TextBounds.Y + 6
-        ),
+        )
+    end)
 		
-        library:Create("UIStroke", {
-			ApplyStrokeMode = "Border",
-			Color = library.flags["Menu Accent Color"],
-			LineJoinMode = "Miter",
-			Thickness = 1,
-			Parent = watermark
-		})
-		
-    	library:Create("UIPadding", {
-    		PaddingBottom = UDim.new(0, 1),
-            PaddingLeft = UDim.new(0, 6),
-            PaddingRight = UDim.new(0, 6),
-    		Parent = watermark
-    	})
-		
-		watermark:GetPropertyChangedSignal("Text"):Connect(function()
-            watermark.Size = UDim2.new(
-                0,watermark.TextBounds.X + 32,
-                0,watermark.TextBounds.Y + 6
-            )
-        end)
-		
-		library:AddConnection(runService.Heartbeat, function()
-            watermark.Text = string.format(
-                "  " .. (title or library.title) .. "  |  %s  |  " .. game:GetService("Players").LocalPlayer.Name .. "  ",
-                os.date("%X")
-            )
-        end)
-    end
+	library:AddConnection(runService.Heartbeat, function()
+        watermark.Text = string.format(
+            "  " .. (title or library.title) .. "  |  %s  |  " .. game:GetService("Players").LocalPlayer.Name .. "  ",
+            os.date("%X")
+        )
+    end)
+
+    table.insert(library.theme, uistroke)
 end
+
+function library:CreateMiscNotification(duration, message)
+    if getgenv().notifArea == nil then
+        getgenv().notifArea = library:Create('Frame', {
+            BackgroundTransparency = 1,
+            Position = UDim2.new(0, 0, 0, 40),
+            Size = UDim2.new(0, 300, 0, 200),
+            ZIndex = 100,
+            Parent = library.base
+        });
+
+        library:Create('UIListLayout', {
+            Padding = UDim.new(0, 4),
+            FillDirection = Enum.FillDirection.Vertical,
+            SortOrder = Enum.SortOrder.LayoutOrder,
+            Parent = notifArea
+        });
+    end
+
+    local NotifyOuter = library:Create('Frame', {
+        BorderColor3 = Color3.new(0, 0, 0),
+        Position = UDim2.new(0, 100, 0, 10),
+        Size = UDim2.new(0, 0, 0, 20);
+        ClipsDescendants = true,
+        ZIndex = 100,
+        Parent = notifArea
+    });
+
+    local NotifyInner = library:Create('Frame', {
+        BackgroundColor3 = Color3.fromRGB(30,30,30),
+        BorderColor3 = Color3.fromRGB(50,50,50),
+        BorderMode = Enum.BorderMode.Inset,
+        Size = UDim2.new(1, 0, 1, 0),
+        ZIndex = 101,
+        Parent = NotifyOuter
+    });
+
+    local InnerFrame = library:Create('Frame', {
+        BackgroundColor3 = Color3.new(1, 1, 1),
+        BorderSizePixel = 0,
+        Position = UDim2.new(0, 1, 0, 1),
+        Size = UDim2.new(1, -2, 1, -2),
+        ZIndex = 102,
+        Parent = NotifyInner
+    });
+
+    local Gradient = library:Create('UIGradient', {
+        Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(20,20,20)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(30,30,30)),
+        });
+        Rotation = -90,
+        Parent = InnerFrame
+    });
+
+    local NotifyLabel = library:Create('TextLabel', {
+        Position = UDim2.new(0, 4, 0, 0),
+        Size = UDim2.new(1, -4, 1, 0),
+        BackgroundTransparency = 1,
+        Text = message,
+        TextColor3 = Color3.fromRGB(255,255,255),
+        TextStrokeTransparency = 0,
+        Font = Enum.Font.Code,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        TextSize = 14,
+        ZIndex = 103,
+        Parent = InnerFrame
+    });
+
+    local LeftColor = library:Create('Frame', {
+        BackgroundColor3 = library.flags["Menu Accent Color"],
+        BorderSizePixel = 0,
+        Position = UDim2.new(0, -1, 0, -1),
+        Size = UDim2.new(0, 3, 1, 2),
+        ZIndex = 104,
+        Parent = NotifyOuter
+    });
+
+    NotifyOuter:TweenSize(UDim2.new(0, NotifyLabel.TextBounds.X + 8 + 4, 0, 20), 'Out', 'Quad', 0.4, true);
+
+    task.spawn(function()
+        task.wait(duration or 5);
+
+        NotifyOuter:TweenSize(UDim2.new(0, 0, 0, 20), 'Out', 'Quad', 0.4, true);
+
+        wait(0.4);
+
+        NotifyOuter:Destroy();
+    end);
+end;
 
 --LIBRARY END
