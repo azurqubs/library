@@ -2841,7 +2841,7 @@ function library:CreateWatermark(title)
         0,watermark.TextBounds.Y + 6
     ),
 		
-    library:Create("UIStroke", {
+    local uistroke = library:Create("UIStroke", {
 		ApplyStrokeMode = "Border",
 		Color = library.flags["Menu Accent Color"],
 		LineJoinMode = "Miter",
