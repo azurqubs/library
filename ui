@@ -2868,6 +2868,7 @@ function library:CreateWatermark(title)
             "  " .. (title or library.title) .. "  |  %s  |  " .. game:GetService("Players").LocalPlayer.Name .. "  ",
             os.date("%X")
         )
+	watermark.Visible = library.flags["WatermarkEnabled"]
     end)
 
     table.insert(library.theme, uistroke)
