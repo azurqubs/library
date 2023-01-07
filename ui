@@ -2839,7 +2839,7 @@ function library:CreateWatermark(title)
 	watermark.Size = UDim2.new(
         0,watermark.TextBounds.X + 32,
         0,watermark.TextBounds.Y + 6
-    ),
+    )
 		
     local uistroke = library:Create("UIStroke", {
 		ApplyStrokeMode = "Border",
